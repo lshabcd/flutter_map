@@ -11,6 +11,7 @@ import 'package:latlong/latlong.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:tuple/tuple.dart';
 import 'package:flutter_image/network.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'layer.dart';
 
@@ -25,15 +26,18 @@ class TileLayerOptions extends LayerOptions {
   ///
   ///https://a.tile.openstreetmap.org/12/2177/1259.png
   final String urlTemplate;
+
   ///Size for the tile.
   ///Default is 256
   final double tileSize;
+
   ///Determiantes the max zoom applicable.
   ///In most tile providers goes from 0 to 19.
   final double maxZoom;
 
   final bool zoomReverse;
   final double zoomOffset;
+
   ///List of subdomains for the URL.
   ///
   ///Example:
@@ -50,6 +54,7 @@ class TileLayerOptions extends LayerOptions {
   ///https://b.tile.openstreetmap.org/{z}/{x}/{y}.png
   ///https://c.tile.openstreetmap.org/{z}/{x}/{y}.png
   final List<String> subdomains;
+
   ///Color shown behind the tiles.
   final Color backgroundColor;
 
@@ -82,20 +87,28 @@ class TileLayerOptions extends LayerOptions {
   ImageProvider placeholderImage;
   Map<String, String> additionalOptions;
 
-  TileLayerOptions({
-    this.urlTemplate,
-    this.tileSize = 256.0,
-    this.maxZoom = 18.0,
-    this.zoomReverse = false,
-    this.zoomOffset = 0.0,
-    this.additionalOptions = const <String, String>{},
-    this.subdomains = const <String>[],
-    this.keepBuffer = 2,
-    this.backgroundColor = const Color(0xFFE0E0E0), // grey[300]
-    this.placeholderImage,
-    this.offlineMode = false,
-    this.fromAssets = true,
-    rebuild}) : super(rebuild: rebuild);
+  /// Use CachedNetworkImageProvider instead NetworkImageWithRetry
+  /// If true, every tile loaded will be storage on cache memory
+  /// If false, will download every tiles again after every restart the app
+  /// default is true
+  final bool cachedTiles;
+
+  TileLayerOptions(
+      {this.urlTemplate,
+      this.tileSize = 256.0,
+      this.maxZoom = 18.0,
+      this.zoomReverse = false,
+      this.zoomOffset = 0.0,
+      this.additionalOptions = const <String, String>{},
+      this.subdomains = const <String>[],
+      this.keepBuffer = 2,
+      this.backgroundColor = const Color(0xFFE0E0E0), // grey[300]
+      this.placeholderImage,
+      this.offlineMode = false,
+      this.fromAssets = true,
+      this.cachedTiles = false,
+      rebuild})
+      : super(rebuild: rebuild);
 }
 
 class TileLayer extends StatefulWidget {
@@ -446,7 +459,11 @@ class _TileLayerState extends State<TileLayer> {
       if (options.fromAssets) {
         return new AssetImage(url);
       } else {
-        return new FileImage(new File(url));
+        if (options.cachedTiles) {
+          return new CachedNetworkImageProvider(url);
+        } else {
+          return new FileImage(new File(url));
+        }
       }
     } else {
       return new NetworkImageWithRetry(url);
