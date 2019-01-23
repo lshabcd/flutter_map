@@ -93,6 +93,9 @@ class TileLayerOptions extends LayerOptions {
   /// default is true
   final bool cachedTiles;
 
+  //background image
+  BoxDecoration decoration;
+
   TileLayerOptions(
       {this.urlTemplate,
       this.tileSize = 256.0,
@@ -107,6 +110,7 @@ class TileLayerOptions extends LayerOptions {
       this.offlineMode = false,
       this.fromAssets = true,
       this.cachedTiles = false,
+      this.decoration,
       rebuild})
       : super(rebuild: rebuild);
 }
@@ -394,6 +398,7 @@ class _TileLayerState extends State<TileLayer> {
         children: tileWidgets,
       ),
       color: this.options.backgroundColor,
+      decoration: this.options.decoration,
     );
   }
 
