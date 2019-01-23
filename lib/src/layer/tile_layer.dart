@@ -397,7 +397,7 @@ class _TileLayerState extends State<TileLayer> {
       child: new Stack(
         children: tileWidgets,
       ),
-      color: this.options.backgroundColor,
+      //color: this.options.backgroundColor,
       decoration: this.options.decoration,
     );
   }
