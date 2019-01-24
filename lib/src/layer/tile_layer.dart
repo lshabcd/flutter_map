@@ -12,6 +12,7 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:tuple/tuple.dart';
 import 'package:flutter_image/network.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_advanced_networkimage/flutter_advanced_networkimage.dart';
 
 import 'layer.dart';
 
@@ -471,7 +472,7 @@ class _TileLayerState extends State<TileLayer> {
         }
       }
     } else {
-      return new NetworkImageWithRetry(url);
+      return new AdvancedNetworkImage(url);
     }
   }
 
