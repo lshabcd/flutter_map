@@ -17,7 +17,7 @@ dependencies:
   transparent_image: ^0.1.0
   async: ^2.0.8
   flutter_image: ^1.0.0
-  flutter_advanced_networkimage: 0.4.0-alpha 
+  flutter_advanced_networkimage: 0.3.13
   cached_network_image:
     git:
       url: https://github.com/ganisback/flutter_cached_network_image.git

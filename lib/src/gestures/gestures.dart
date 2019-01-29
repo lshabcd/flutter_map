@@ -28,6 +28,7 @@ abstract class MapGestureMixin extends State<FlutterMap>
   MapState get mapState;
   MapState get map => mapState;
   MapOptions get options;
+  bool dragElement = false;
 
   @override
   void initState() {
@@ -48,24 +49,37 @@ abstract class MapGestureMixin extends State<FlutterMap>
       final focalOffset = details.focalPoint - _mapOffset;
       _focalStartLocal = _offsetToPoint(focalOffset);
       _focalStartGlobal = _offsetToCrs(focalOffset);
-
       _controller.stop();
     });
+    if (options.onDragStart != null) {
+      dragElement = options.onDragStart(_focalStartGlobal);
+    } else {
+      dragElement = false;
+    }
   }
 
   void handleScaleUpdate(ScaleUpdateDetails details) {
+    if (dragElement) {
+      options.onDragUpdate(_focalStartGlobal);
+      //recaculate the point for _focalStartGlobal
+      return;
+    }
     setState(() {
       final focalOffset = _offsetToPoint(details.focalPoint - _mapOffset);
       final newZoom = _getZoomForScale(_mapZoomStart, details.scale);
       final focalStartPt = map.project(_focalStartGlobal, newZoom);
       final newCenterPt = focalStartPt - focalOffset + map.size / 2.0;
       final newCenter = map.unproject(newCenterPt, newZoom);
+      //print("newCenter" + newCenter.toString());
       map.move(newCenter, newZoom);
       _flingOffset = _pointToOffset(_focalStartLocal - focalOffset);
     });
   }
 
   void handleScaleEnd(ScaleEndDetails details) {
+    if (dragElement) {
+      return;
+    }
     final double magnitude = details.velocity.pixelsPerSecond.distance;
     if (magnitude < _kMinFlingVelocity) return;
     final Offset direction = details.velocity.pixelsPerSecond / magnitude;
