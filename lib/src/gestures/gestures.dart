@@ -60,7 +60,9 @@ abstract class MapGestureMixin extends State<FlutterMap>
 
   void handleScaleUpdate(ScaleUpdateDetails details) {
     if (dragElement) {
-      options.onDragUpdate(_focalStartGlobal);
+      final focalOffset = details.focalPoint - _mapOffset;
+      LatLng myfocalGlobal = _offsetToCrs(focalOffset);
+      options.onDragUpdate(myfocalGlobal);
       //recaculate the point for _focalStartGlobal
       return;
     }
