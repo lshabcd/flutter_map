@@ -96,6 +96,9 @@ class TileLayerOptions extends LayerOptions {
   //background image
   BoxDecoration decoration;
 
+  //use custom tile
+  final bool isCustomTile;
+
   TileLayerOptions(
       {this.urlTemplate,
       this.tileSize = 256.0,
@@ -111,6 +114,7 @@ class TileLayerOptions extends LayerOptions {
       this.fromAssets = true,
       this.cachedTiles = false,
       this.decoration,
+      this.isCustomTile,
       rebuild})
       : super(rebuild: rebuild);
 }
@@ -161,6 +165,18 @@ class _TileLayerState extends State<TileLayer> {
       _pruneTiles();
       this._resetView();
     });
+  }
+
+  String getCustomTileUrl(Coords coords) {
+    var data = <String, String>{
+      'x': coords.x.round().toString(),
+      'y': util.getConvertY(coords.z, coords.y).round().toString(),
+      'z': coords.z.round().toString(),
+      's': _getSubdomain(coords)
+    };
+    Map<String, String> allOpts = new Map.from(data)
+      ..addAll(this.options.additionalOptions);
+    return util.template(this.options.urlTemplate, allOpts);
   }
 
   String getTileUrl(Coords coords) {
@@ -452,7 +468,9 @@ class _TileLayerState extends State<TileLayer> {
           placeholder: options.placeholderImage != null
               ? options.placeholderImage
               : new MemoryImage(kTransparentImage),
-          image: _getImageProvider(getTileUrl(coords)),
+          image: _getImageProvider(options.isCustomTile
+              ? getCustomTileUrl(coords)
+              : getTileUrl(coords)),
           fit: BoxFit.fill,
         ),
       ),

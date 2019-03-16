@@ -1,4 +1,5 @@
 import 'package:tuple/tuple.dart';
+import 'dart:math';
 
 var _templateRe = new RegExp(r"\{ *([\w_-]+) *\}");
 String template(String str, Map<String, String> data) {
@@ -10,6 +11,10 @@ String template(String str, Map<String, String> data) {
       return value;
     }
   });
+}
+
+double getConvertY(double z, double y) {
+  return pow(2, z) - y - 1;
 }
 
 double wrapNum(double x, Tuple2<double, double> range, [bool includeMax]) {
