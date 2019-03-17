@@ -114,7 +114,7 @@ class TileLayerOptions extends LayerOptions {
       this.fromAssets = true,
       this.cachedTiles = false,
       this.decoration,
-      this.isCustomTile,
+      this.isCustomTile = false,
       rebuild})
       : super(rebuild: rebuild);
 }
