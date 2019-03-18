@@ -171,7 +171,7 @@ class _TileLayerState extends State<TileLayer> {
     var data = <String, String>{
       'x': coords.x.round().toString(),
       'y': util.getConvertY(coords.z, coords.y).round().toString(),
-      'z': coords.z.round().toString(),
+      'z': (coords.z - 1).round().toString(),
       's': _getSubdomain(coords)
     };
     Map<String, String> allOpts = new Map.from(data)

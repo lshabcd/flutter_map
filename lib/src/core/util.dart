@@ -14,7 +14,7 @@ String template(String str, Map<String, String> data) {
 }
 
 double getConvertY(double z, double y) {
-  return pow(2, z) - y - 1;
+  return pow(2, (z - 1)) + y;
 }
 
 double wrapNum(double x, Tuple2<double, double> range, [bool includeMax]) {
