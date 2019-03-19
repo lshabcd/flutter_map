@@ -96,9 +96,6 @@ class TileLayerOptions extends LayerOptions {
   //background image
   BoxDecoration decoration;
 
-  //use custom tile
-  final bool isCustomTile;
-
   TileLayerOptions(
       {this.urlTemplate,
       this.tileSize = 256.0,
@@ -114,7 +111,6 @@ class TileLayerOptions extends LayerOptions {
       this.fromAssets = true,
       this.cachedTiles = false,
       this.decoration,
-      this.isCustomTile = false,
       rebuild})
       : super(rebuild: rebuild);
 }
@@ -468,9 +464,7 @@ class _TileLayerState extends State<TileLayer> {
           placeholder: options.placeholderImage != null
               ? options.placeholderImage
               : new MemoryImage(kTransparentImage),
-          image: _getImageProvider(options.isCustomTile
-              ? getCustomTileUrl(coords)
-              : getTileUrl(coords)),
+          image: _getImageProvider(getTileUrl(coords)),
           fit: BoxFit.fill,
         ),
       ),
