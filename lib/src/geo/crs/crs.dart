@@ -25,7 +25,8 @@ abstract class Crs {
 
   LatLng pointToLatLng(Point point, double zoom) {
     var scale = this.scale(zoom);
-    var untransformedPoint = this.transformation.untransform(point, scale.toDouble());
+    var untransformedPoint =
+        this.transformation.untransform(point, scale.toDouble());
     try {
       return projection.unproject(untransformedPoint);
     } catch (e) {
@@ -111,6 +112,32 @@ class SphericalMercator extends Projection {
     return new LatLng(
         (2 * math.atan(math.exp(point.y / r)) - (math.pi / 2)) * d,
         point.x * d / r);
+  }
+}
+
+class Epsg4326 extends Earth {
+  final String code = 'EPSG:4326';
+  final Projection projection;
+  final Transformation transformation;
+  const Epsg4326()
+      : projection = const LonLat(),
+        transformation = const Transformation(1 / 180, 1, -1 / 180, 0.5),
+        super();
+}
+
+class LonLat extends Projection {
+  static Bounds<double> _bounds = new Bounds<double>(
+      new Point<double>(-180.0, -90.0), new Point<double>(180.0, 90.0));
+
+  const LonLat() : super();
+  Bounds<double> get bounds => _bounds;
+
+  Point project(LatLng latlng) {
+    return new Point(latlng.longitude, latlng.latitude);
+  }
+
+  LatLng unproject(Point point) {
+    return new LatLng(point.y, point.x);
   }
 }
 

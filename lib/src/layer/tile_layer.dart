@@ -93,6 +93,10 @@ class TileLayerOptions extends LayerOptions {
   /// default is true
   final bool cachedTiles;
 
+  /// If `true`, inverses Y axis numbering for tiles (turn this on for
+  /// [TMS](https://en.wikipedia.org/wiki/Tile_Map_Service) services).
+  final bool tms;
+
   //background image
   BoxDecoration decoration;
 
@@ -110,6 +114,7 @@ class TileLayerOptions extends LayerOptions {
       this.offlineMode = false,
       this.fromAssets = true,
       this.cachedTiles = false,
+      this.tms = false,
       this.decoration,
       rebuild})
       : super(rebuild: rebuild);
@@ -163,18 +168,6 @@ class _TileLayerState extends State<TileLayer> {
     });
   }
 
-  String getCustomTileUrl(Coords coords) {
-    var data = <String, String>{
-      'x': coords.x.round().toString(),
-      'y': util.getConvertY(coords.z, coords.y).round().toString(),
-      'z': (coords.z - 1).round().toString(),
-      's': _getSubdomain(coords)
-    };
-    Map<String, String> allOpts = new Map.from(data)
-      ..addAll(this.options.additionalOptions);
-    return util.template(this.options.urlTemplate, allOpts);
-  }
-
   String getTileUrl(Coords coords) {
     var data = <String, String>{
       'x': coords.x.round().toString(),
@@ -182,9 +175,17 @@ class _TileLayerState extends State<TileLayer> {
       'z': coords.z.round().toString(),
       's': _getSubdomain(coords)
     };
+    if (this.options.tms) {
+      data['y'] = _invertY(coords.y.round(), coords.z.round()).toString();
+    }
     Map<String, String> allOpts = new Map.from(data)
       ..addAll(this.options.additionalOptions);
+    print(util.template(this.options.urlTemplate, allOpts));
     return util.template(this.options.urlTemplate, allOpts);
+  }
+
+  int _invertY(int y, int z) {
+    return ((1 << z) - 1) - y;
   }
 
   void _resetView() {
