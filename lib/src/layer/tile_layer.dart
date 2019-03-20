@@ -180,7 +180,7 @@ class _TileLayerState extends State<TileLayer> {
     }
     Map<String, String> allOpts = new Map.from(data)
       ..addAll(this.options.additionalOptions);
-    print(util.template(this.options.urlTemplate, allOpts));
+    //print(util.template(this.options.urlTemplate, allOpts));
     return util.template(this.options.urlTemplate, allOpts);
   }
 
