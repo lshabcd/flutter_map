@@ -80,9 +80,10 @@ abstract class MapGestureMixin extends State<FlutterMap>
 
   void handleScaleEnd(ScaleEndDetails details) {
     if (dragElement) {
+      options.onDragEnd();
       return;
     }
-    options.onDragEnd();
+
     final double magnitude = details.velocity.pixelsPerSecond.distance;
     if (magnitude < _kMinFlingVelocity) return;
     final Offset direction = details.velocity.pixelsPerSecond / magnitude;
