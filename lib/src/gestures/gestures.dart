@@ -73,6 +73,7 @@ abstract class MapGestureMixin extends State<FlutterMap>
       final newCenterPt = focalStartPt - focalOffset + map.size / 2.0;
       final newCenter = map.unproject(newCenterPt, newZoom);
       //print("newCenter" + newCenter.toString());
+      //print('addlistener');
       map.move(newCenter, newZoom);
       _flingOffset = _pointToOffset(_focalStartLocal - focalOffset);
     });
